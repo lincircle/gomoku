@@ -12,20 +12,16 @@ var x = 0
 
 var y = 0
 
-var game = "L"
+var user_win = false
 
 var flag = 0
 
-var player_1 = ""
+var player: [String] = [String](repeating: "", count: 2)
 
-var player_2 = ""
-
-var mark = ""
-
-var player_name = ""
+var mark: [String] = [String](repeating: "", count: 2)
 
 while true {
- 
+    
     print("請輸入一號玩家名稱？")
     
     guard let name = readLine() else {
@@ -34,11 +30,35 @@ while true {
         
     }
     
-    player_1 = name
+    player[0] = name
     
     break
-
+    
 }
+
+while true {
+    
+    print("請選擇棋子（O, X）？")
+    
+    guard let chess = readLine() else {
+        
+        continue
+        
+    }
+    
+    if chess != "O" && chess != "X" {
+        
+        continue
+        
+    }
+    
+    mark[0] = chess
+    
+    break
+    
+}
+
+mark[1] = (mark[0] == "O") ? "X" : "O"
 
 while true {
     
@@ -50,17 +70,31 @@ while true {
         
     }
     
-    player_2 = name
+    player[1] = name
     
     break
     
 }
 
-print("\(player_1)玩家為 O")
+print("\(player[0])玩家為 \(mark[0])")
 
-print("\(player_2)玩家為 X")
+print("\(player[1])玩家為 \(mark[1])")
 
 var board: [[String]] = [[String]](repeating: [String](repeating: "+", count: 10), count: 10)
+
+for i in 0...9 {
+    
+    if i != 9 {
+        
+        print(i, terminator: " ")
+        
+        continue
+        
+    }
+    
+    print(i)
+    
+}
 
 for row in board {
     
@@ -76,53 +110,9 @@ for row in board {
 
 while true {
     
-    switch flag {  //判斷玩家
-        
-    case 0: //player-1
-        
-        mark = "O"
-        
-        player_name = player_1
-        
-        
-    case 1: //player-2
-        
-        mark = "X"
-        
-        player_name = player_2
-        
-    default:
-        
-        print("app error")
-        
-        break
-    }
-
     while true {
         
-        print("請 \(player_name) 輸入棋子 x 位置?")
-        
-        guard let typed = readLine() else {
-            
-            continue
-        }
-        
-        guard let num = Int(typed) else {
-            
-            continue
-        }
-        
-        x = num
-        
-        break
-        
-    }
-
-
-
-    while true {
-        
-        print("請 \(player_name) 輸入棋子y位置?")
+        print("請 \(player[flag]) 輸入棋子 x 位置?")
         
         guard let typed = readLine() else {
             
@@ -140,9 +130,45 @@ while true {
         
     }
     
-    print("(\(x),\(y))")
     
-    board[x][y] = mark
+    
+    while true {
+        
+        print("請 \(player[flag]) 輸入棋子y位置?")
+        
+        guard let typed = readLine() else {
+            
+            continue
+        }
+        
+        guard let num = Int(typed) else {
+            
+            continue
+        }
+        
+        x = num
+        
+        break
+        
+    }
+    
+    print("(\(y),\(x))")
+    
+    board[x][y] = mark[flag]
+    
+    for i in 0...9 {
+        
+        if i != 9 {
+            
+            print(i, terminator: " ")
+            
+            continue
+            
+        }
+        
+        print(i)
+        
+    }
     
     for row in board {
         
@@ -162,7 +188,7 @@ while true {
     
     var count = 0
     
-    if board[x][y] == mark {
+    if board[x][y] == mark[flag] {
         
         count += 1
         //往下
@@ -178,7 +204,7 @@ while true {
                 
             }
             
-            if board[temp_x][y] == mark {
+            if board[temp_x][y] == mark[flag] {
                 
                 count += 1
                 
@@ -186,7 +212,7 @@ while true {
                     
                     print("win!!!")
                     
-                    game = "W"
+                    user_win = true
                     
                     break
                     
@@ -215,7 +241,7 @@ while true {
                 
             }
             
-            if board[temp_x][y] == mark {
+            if board[temp_x][y] == mark[flag] {
                 
                 count += 1
                 
@@ -223,7 +249,7 @@ while true {
                     
                     print("win!!!")
                     
-                    game = "W"
+                    user_win = true
                     
                     break
                     
@@ -241,20 +267,20 @@ while true {
             }
             
         }
-       //往左
+        //往左
         while true {
             
             temp_y = temp_y - 1
             
-             if temp_y < 0 {
+            if temp_y < 0 {
                 
                 temp_y = y
-             
-             break
-             
-             }
-             
-            if board[x][temp_y] == mark {
+                
+                break
+                
+            }
+            
+            if board[x][temp_y] == mark[flag] {
                 
                 count += 1
                 
@@ -264,7 +290,7 @@ while true {
                     
                     print("win!!!")
                     
-                    game = "W"
+                    user_win = true
                     
                     break
                     
@@ -292,7 +318,7 @@ while true {
                 
             }
             
-            if board[x][temp_y] == mark {
+            if board[x][temp_y] == mark[flag] {
                 
                 count += 1
                 
@@ -302,7 +328,7 @@ while true {
                     
                     print("win!!!")
                     
-                    game = "W"
+                    user_win = true
                     
                     break
                     
@@ -318,7 +344,7 @@ while true {
                 break
                 
             }
-         
+            
         }
         //右上
         while true {
@@ -337,17 +363,15 @@ while true {
                 
             }
             
-            if board[temp_x][temp_y] == mark {
+            if board[temp_x][temp_y] == mark[flag] {
                 
                 count += 1
-                
-                print("count:\(count)[右上]")
                 
                 if count == 5 {
                     
                     print("win!!!")
                     
-                    game = "W"
+                    user_win = true
                     
                     break
                     
@@ -382,17 +406,15 @@ while true {
             }
             
             
-            if board[temp_x][temp_y] == mark {
+            if board[temp_x][temp_y] == mark[flag] {
                 
                 count += 1
-                
-                print("count:\(count)[左下]")
                 
                 if count == 5 {
                     
                     print("win!!!")
                     
-                    game = "W"
+                    user_win = true
                     
                     break
                     
@@ -429,17 +451,15 @@ while true {
                 
             }
             
-            if board[temp_x][temp_y] == mark {
+            if board[temp_x][temp_y] == mark[flag] {
                 
                 count += 1
-                
-                print("count:\(count)[左上]")
                 
                 if count == 5 {
                     
                     print("win!!!")
                     
-                    game = "W"
+                    user_win = true
                     
                     break
                     
@@ -463,23 +483,21 @@ while true {
             
             temp_y = temp_y + 1
             
-            if temp_x < 0 || 9 < temp_x || temp_y < 0 || 9 < temp_y {
+            if !((0 <= temp_x && temp_x <= 9) && (0 <= temp_y && temp_y <= 9)) {
                 
                 break
                 
             }
             
-            if board[temp_x][temp_y] == mark {
+            if board[temp_x][temp_y] == mark[flag] {
                 
                 count += 1
-                
-                print("count:\(count)[右下]")
                 
                 if count == 5 {
                     
                     print("win!!!")
                     
-                    game = "W"
+                    user_win = true
                     
                     break
                     
@@ -493,21 +511,12 @@ while true {
             }
             
         }
- 
-    }
-    
-    if flag == 0 {
-        
-        flag = 1
-        
-    }
-    else {
-        
-        flag = 0
         
     }
     
-    if game == "W" {
+    flag = (flag == 0) ? 1 : 0
+    
+    if user_win {
         
         print("遊戲結束")
         
@@ -515,9 +524,3 @@ while true {
     }
     
 }
-
-
-
-
-
-
